@@ -14,28 +14,28 @@ class UserController extends Controller
     {
         if($request->isMethod('post')){
             //validate the request
-            // $this->validate($request, [
-            //     'name' => 'required',
-            //     'email' => 'required|email|unique:users',
-            //     'password' => 'required|confirmed|min:6',
-            // ]);
+            $this->validate($request, [
+                // 'name' => 'required',
+                'email' => 'required|email|unique:users',
+                // 'password' => 'required|confirmed|min:6',
+            ]);
 
             //create the user
             $user = new User();
             $user->name = $request->name;
             $user->email = $request->email;
             $user->password = bcrypt($request->password);
-            $user->save();
+            $saved = $user->save();
 
             $token = $user->createToken('MyApp')->accessToken;
 
-            //return the response
-            return response()->json([
-                'message' => 'Successfully created user!',
-                'data' => $user,
-                'token' => $token
+          if($saved){
+            return response()->json(['success' => true, 'message' => 'User registered successfully', 'token' => $token]);
+            }else{
+            return response()->json(['success' => false, 'message' => 'User registration failed']);
+            }
+        }
 
-            ], 201);        }
     }
 
     //handle the login api request
