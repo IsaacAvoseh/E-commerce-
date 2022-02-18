@@ -24,7 +24,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 //routes\api.php
 Route::match(['post', 'get'], '/register',[ UserController::class, 'register']);
-Route::match(['get', 'post'], '/login', [UserController::class, 'login'])->name('login');
+Route::match(['get', 'post'], '/login', [UserController::class, 'login']);
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/users', [UserController::class, 'profile']);
