@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\Transactions;
 use App\Models\Brand;
 use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Shipping;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use PhpParser\Node\Expr\FuncCall;
 use Symfony\Component\VarDumper\Cloner\Data;
 
 class ProductController extends Controller
@@ -106,6 +110,7 @@ class ProductController extends Controller
             $product->size = $request->size;
             $product->brand_id = $request->brand_id;
             $product->category_id = $request->category_id;
+            $product->isfeatured = $request->isfeatured;
 
 
             // if (request()->hasFile([
@@ -161,15 +166,50 @@ class ProductController extends Controller
       return view('product', compact('brands', 'categories', 'products'));
     }
 
+    //get featured products
+    public function getFeatured()
+    {
+        $products = Product::with('brand', 'category')->where('isfeatured', 1)->inRandomOrder()->get();
+        return response()->json([
+            'success' => 'Successfully retrieved featured products!',
+            'data' => $products
+        ], 200);
+    }
+
+    //get latest products
+    public function getLatest()
+    {
+        $products = Product::with('brand', 'category')->orderBy('created_at', 'desc')->limit(6)->get();
+        return response()->json([
+            'success' => 'Successfully retrieved latest products!',
+            'data' => $products
+        ], 200);
+    }
+
+    //get trending products where product name appears more than three times
+ 
+    public function getTrending()
+    {
+       $trending = Payment::with('product')->select('product_name', DB::raw('count(*) as total'))->groupBy('product_name')->limit(6)->get();
+         return response()->json([
+                'success' => 'Successfully retrieved trending products!',
+                'data' => $trending
+          ], 200);
+    }
+   
+
 
     public function delete($id)
     {
+
+        //find product by id
         $product = Product::find($id);
         $product->delete();
         return response()->json([
             'message' => 'Successfully deleted product!'
         ], 200);
     }
+
     //add new brand
     public function addBrand(Request $request)
     {
@@ -232,6 +272,7 @@ class ProductController extends Controller
     }
 
 
+
     public function update(Request $request, $id)
     {
         $product = Product::find($id);
@@ -275,12 +316,20 @@ class ProductController extends Controller
     
     }
 
+    public function mail()
+    {
+         return view('mail.transactions');
+     }
+
     //update payment status success or failed
     public function updatePaymentStatus(Request $request)
     {
         $data = $request->all();
+     
         $payment = DB::table('payments')->where('reference', $data['reference'])->update(['status' => $data['status']]);
-       
+        // Mail::to($order->email)->send(new MailOrder($order));
+        
+        Mail::to($data['email'])->send(new Transactions($data));
 
         return response()->json([
             'success' => 'success',
@@ -332,5 +381,32 @@ class ProductController extends Controller
         $cart = new Cart();
         
   }
+
+  public function getCart(Request $request){
+      $cart = Cart::where('user_id', Auth::user()->id)->get();
+      return response()->json([
+          'message' => 'Successfully retrieved cart items!',
+          'data' => $cart
+      ], 200);
+  }
+
+    public function addToCart(Request $request){
+        $data = $request->all();
+        $cart = new Cart();
+        $cart->product_name = $data['product_name'];
+        $cart->product_code = $data['product_code'];
+        $cart->price = $data['price'];
+        $cart->quantity = $data['quantity'];
+        $cart->total = $data['total'];
+        $cart->user_id = Auth::user()->id;
+        $saved = $cart->save();
+        if ($saved){
+            return response()->json([
+                'success' => 'Successfully saved cart item!',
+                'data' => $cart
+            ], 200);
+        }
+    }
+
 
 }

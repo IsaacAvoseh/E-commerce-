@@ -30,7 +30,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/users', [UserController::class, 'profile']);
     Route::match(['post', 'get'], '/shipping', [ProductController::class, 'shippingDetails']);
     Route::post('/initailpayment', [ProductController::class, 'initialPaymentDetails']);
-    Route::post('/payment/update', [ProductController::class, 'updatePaymentStatus']);
+    Route::match(['get', 'post'],'/payment/update', [ProductController::class, 'updatePaymentStatus']);
 });
 
 Route::get('/products', [ProductController::class, 'index']);
@@ -39,3 +39,6 @@ Route::get('/categories', [ProductController::class, 'getCategories']);
 Route::get('/brands', [ProductController::class, 'getBrands']);
 Route::get('/products/category/{id}', [ProductController::class, 'getByCategory']);
 Route::get('/products/brand/{id}', [ProductController::class, 'getByBrand']);
+Route::get('/trending', [ProductController::class, 'getTrending']);
+Route::get('/latest', [ProductController::class, 'getLatest']);
+Route::get('/featured', [ProductController::class, 'getFeatured']);
