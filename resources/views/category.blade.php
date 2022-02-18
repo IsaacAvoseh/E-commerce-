@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Category</title>
+    <link href="styles.css" rel="stylesheet" />
+
 </head>
 
 <body>
@@ -15,7 +17,7 @@
     <div class="alert alert-success">
         {{ Session::get('success') }}
     </div>
-    @endif 
+    @endif
     <form method="post" enctype="multipart/form-data">
         @csrf
         <div class="form-group">
