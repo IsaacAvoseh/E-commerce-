@@ -113,6 +113,7 @@ class ProductController extends Controller
             $product->isfeatured = $request->isfeatured;
 
 
+               if($request->hasFile('image')){
                 $image = $request->file('image');
                 $image_1 = $request->file('image_1');
                 $image_2 = $request->file('image_2');
@@ -129,6 +130,7 @@ class ProductController extends Controller
                 $image_2->move(public_path('images'), $image_2_name);
                 $image_3->move(public_path('images'), $image_3_name);
 
+            }
               
         
             $product->image = $image_name;
