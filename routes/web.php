@@ -19,6 +19,8 @@ Route::get('/', function () {
 });
 
 Route::match(['post', 'get'], '/brands', [ProductController::class, 'addBrand']);
-Route::match(['post', 'get'], '/products', [ProductController::class, 'store']); 
+Route::match(['post', 'get'], '/products', [ProductController::class, 'store'])->name('product'); 
 Route::match(['post', 'get'], '/categories', [ProductController::class, 'addCategory']);
 Route::match(['post', 'get'], '/mail', [ProductController::class, 'mail']);
+Route::match(['post', 'get'], '/delete/{id}', [ProductController::class, 'deleteProduct']);
+Route::match(['post', 'get'], '/update/{id}', [ProductController::class, 'updateProduct']);

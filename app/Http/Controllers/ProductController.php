@@ -113,21 +113,10 @@ class ProductController extends Controller
             $product->isfeatured = $request->isfeatured;
 
 
-            // if (request()->hasFile([
-            //     'image',
-            //     'image_1',
-            //     'image_2',
-            //     'image_3'
-            // ])) {
                 $image = $request->file('image');
                 $image_1 = $request->file('image_1');
                 $image_2 = $request->file('image_2');
                 $image_3 = $request->file('image_3');
-
-                // $image_name = time() . '.' . $image->getClientOriginalExtension();
-                // $image_1_name = time() . '.' . $image_1->getClientOriginalExtension();
-                // $image_2_name = time() . '.' . $image_2->getClientOriginalExtension();
-                // $image_3_name = time() . '.' . $image_3->getClientOriginalExtension();
 
                 $image_name = $image->getClientOriginalName();
                 $image_1_name = $image_1->getClientOriginalName();
@@ -141,13 +130,13 @@ class ProductController extends Controller
                 $image_3->move(public_path('images'), $image_3_name);
 
               
-           // }
+        
             $product->image = $image_name;
             $product->image_1 = $image_1_name;
             $product->image_2 = $image_2_name;
             $product->image_3 = $image_3_name;   
 
-            // dd($product);
+         
 
            $saved = $product->save();
 
@@ -158,7 +147,7 @@ class ProductController extends Controller
 
       }
 
-      $brands = Brand::all();
+        $brands = Brand::all();
         $categories = Category::all();
     
         $products = Product::with('brand')->with('category')->get();
@@ -406,6 +395,60 @@ class ProductController extends Controller
                 'data' => $cart
             ], 200);
         }
+    }
+
+    public function deleteProduct($id){
+        $product = Product::find($id);
+        $product->delete();
+      return back()->with('success', 'Product deleted successfully!'); 
+    }
+
+    public function updateProduct(Request $request, $id){
+       $product = Product::find($id);
+   if($request->isMethod('post')){
+            $image = $request->file('image');
+            $image_1 = $request->file('image_1');
+            $image_2 = $request->file('image_2');
+            $image_3 = $request->file('image_3');
+
+            $image_name = $image->getClientOriginalName();
+            $image_1_name = $image_1->getClientOriginalName();
+            $image_2_name = $image_2->getClientOriginalName();
+            $image_3_name = $image_3->getClientOriginalName();
+
+
+            $image->move(public_path('images'), $image_name);
+            $image_1->move(public_path('images'), $image_1_name);
+            $image_2->move(public_path('images'), $image_2_name);
+            $image_3->move(public_path('images'), $image_3_name);
+
+            $updateProduct = DB::table('products')->where('id', $id)->update([
+                'name' => $request->name,
+                'price' => $request->price,
+                'discount_price' => $request->discount_price,
+                'product_code' => strtoupper(substr($request->name, 0, 1)) . rand(100000, 999999),
+                'description' => $request->description,
+                'color' => $request->color,
+                'size' => $request->size,
+                'brand_id' => $request->brand_id,
+                'category_id' => $request->category_id,
+                'isfeatured' => $request->isfeatured,
+                'image' => $image_name,
+                'image_1' => $image_1_name,
+                'image_2' => $image_2_name,
+                'image_3' => $image_3_name,
+
+            ]);
+
+          return redirect()->route('product')->with('success', 'Product updated successfully!');
+   }
+
+        $brands = Brand::all();
+        $categories = Category::all();
+
+   return view('update', compact('product', 'brands', 'categories'));
+    
+     
     }
 
 

@@ -139,10 +139,10 @@
                     <td>{{ $product->brand->name }}</td>
                     <td>{{ $product->category->name }}</td>
                     <td>
-                        <a href='' class="btn btn-primary">Edit</a>
-                        <form action="" method="post" class="d-inline">
+                        <a href='/update/{{ $product->id }}' class="btn btn-primary">Edit</a>
+                        <form action="/delete/{{$product->id}}" method="post" class="d-inline">
                             @csrf
-                            @method('DELETE')
+                           
                             <button class="btn btn-danger" type="submit">Delete</button>
                         </form>
                     </td>
