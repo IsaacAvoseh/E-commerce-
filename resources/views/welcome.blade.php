@@ -29,10 +29,11 @@
     </nav>
     <!-- Header-->
     <header class="bg-primary bg-gradient text-white">
+       
         <div class="container px-4 text-center">
             <h1 class="fw-bolder">Welcome to your DashBoard</h1>
             <p class="lead">No Information will be provided for you, if you are an Admin , you should know what to do</p>
-            <a class="btn btn-lg btn-light" href="#about">Continue!</a>
+            <a class="btn btn-lg btn-light" href="https://hecto-ecom.web.app/">Continue to main site</a>
         </div>
     </header>
     <!-- About section-->
