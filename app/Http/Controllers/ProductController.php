@@ -404,7 +404,7 @@ class ProductController extends Controller
     }
 
     public function updateProduct(Request $request, $id){
-       $product = Product::find($id);
+       $product = Product::with('category', 'brand')->find($id);
    if($request->isMethod('post')){
             $image = $request->file('image');
             $image_1 = $request->file('image_1');
@@ -443,10 +443,10 @@ class ProductController extends Controller
           return redirect()->route('product')->with('success', 'Product updated successfully!');
    }
 
-        $brands = Brand::all();
-        $categories = Category::all();
+    // dd($product->brand->id);
+    
 
-   return view('update', compact('product', 'brands', 'categories'));
+   return view('update', compact('product'));
     
      
     }

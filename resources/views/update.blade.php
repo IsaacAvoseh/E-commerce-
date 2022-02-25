@@ -62,24 +62,8 @@
             <label for="size">Size</label>
             <input type="text" value="{{ $product->size}}" class="form-control" name="size" id="size" placeholder="Enter Product Size">
         </div>
-        <div class="form-group">
-            <label for="brand_id">Brand</label>
-            <select class="form-control" name="brand_id" id="brand_id">
-                <option value="">Select Brand</option>
-                @foreach($brands as $brand)
-                <option value="{{ $brand->id }}">{{ $brand->name }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="category_id">Category</label>
-            <select class="form-control" name="category_id" id="category_id">
-                <option value="">Select Category</option>
-                @foreach($categories as $category)
-                <option value="{{ $category->id }}">{{ $category->name }}</option>
-                @endforeach
-            </select>
-        </div>
+        <input name="category_id" hidden value="{{ $product->category->id }}" />
+        <input name="brand_id" hidden value="{{ $product->brand->id }}" />
 
 
         <div class="form-group">
