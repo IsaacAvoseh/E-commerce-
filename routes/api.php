@@ -23,14 +23,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 //routes\api.php
-Route::match(['post', 'get'], '/register',[ UserController::class, 'register']);
-Route::match(['get', 'post'], '/login', [UserController::class, 'login']);
+Route::match(['post', 'get'], '/register', [UserController::class, 'register']);
+Route::match(['get', 'post'], '/login', [UserController::class, 'login'])->name('login');
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/users', [UserController::class, 'profile']);
     Route::match(['post', 'get'], '/shipping', [ProductController::class, 'shippingDetails']);
     Route::post('/initailpayment', [ProductController::class, 'initialPaymentDetails']);
-    Route::match(['get', 'post'],'/payment/update', [ProductController::class, 'updatePaymentStatus']);
+    Route::match(['get', 'post'], '/payment/update', [ProductController::class, 'updatePaymentStatus']);
 });
 
 Route::get('/products', [ProductController::class, 'index']);
